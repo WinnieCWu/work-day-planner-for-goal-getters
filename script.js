@@ -21,8 +21,8 @@ var saveTasks = function () {
   return localStorage.setItem('id', '12');
 };
 
-//set the time to 12pm so the events saved after it will be green 
-//and the events before it will be greyed out
+//set the time to 12pm (which states "current time!" so the events saved after it will be green 
+//and the events before it will be greyed out and say "event that already happened"
 $("#12").on("click", "textarea", function() {
   var text = $(this).val()
 });
@@ -35,6 +35,6 @@ var currentTime = moment().hour()
   } else if (moment().isBefore(currentTime)) {
     $(".description").addClass("list-group-item-dark");
   } else {
-    moment();
+    moment().addClass("list-group-item-danger");
   }
 
