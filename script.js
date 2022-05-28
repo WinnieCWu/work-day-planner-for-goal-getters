@@ -1,40 +1,80 @@
+// current time variable
+var currentTime = moment().hours();
+console.log(currentTime);
+
 //hours variable for tasks
 var hours = $(".hour");
+console.log(hours);
 console.log(hours[0].dataset.id);
 
 //target save button
 var saveButton = $(".saveBtn");
 console.log(saveButton);
 
+// target textarea
+var taskDescriptionInput = $("textarea").val();
+
+
+var currentDay = $("#currentDay")
 var currentDayMoment = moment().format("dddd, MMMM Do YYYY, h:mm:ss a");
+console.log(currentDayMoment);
 $(".currentDay").html(currentDayMoment);
 
 //add event listener to all the save buttons
-$(".saveBtn").click(function(){
-    var taskText = $(".row").val();
-    var taskTime 
-})
+saveButton.on("click", function() {
 
-//when click the save button, the task will be saved to localStorage
-var saveTasks = function () {
-  //add on click of the save button
-  return localStorage.setItem('id', '12');
-};
+  // target the task in the sibling element with class "description"
+  var thisTask = $(this).siblings(".description").val();
+  console.log(thisTask);
+  // target the id of the entire parent time block
+  var thisTime = $(this).parent().attr("id");
 
-//set the time to 12pm (which states "current time!" so the events saved after it will be green 
-//and the events before it will be greyed out and say "event that already happened"
-$("#12").on("click", "textarea", function() {
-  var text = $(this).val()
+  // save targeted task into local storage, with key as time and value as task
+  localStorage.setItem(thisTime, thisTask);
 });
 
+// for loop to audit the hours and compare to the current time
+for (var i = 0; i < hours.length; i++) {
+  // parse the hour into integers
+  var taskTime = parseInt(hours[i].dataset.id);
 
-var currentTime = moment().hour()
-  if (moment().isAfter(currentTime)) {
-    $(".description").addClass("list-group-item-success");
-    //using the else if statement, if task is due one day from now (neg #= now-future date; so use absolute value), will get yellow background
-  } else if (moment().isBefore(currentTime)) {
-    $(".description").addClass("list-group-item-dark");
-  } else {
-    moment().addClass("list-group-item-danger");
+
+  if (taskTime > currentTime) {
+      $(`#${hours[i].id}`).addClass("future");
+      $(`#${hours[i].id}`).removeClass("past");
+      $(`#${hours[i].id}`).removeClass("present");
   }
+
+
+  if (taskTime === currentTime) {
+      $(`#${hours[i].id}`).addClass("present");
+      $(`#${hours[i].id}`).removeClass("future");
+      $(`#${hours[i].id}`).removeClass("past");
+  }
+
+
+  if (taskTime < currentTime) {
+      $(`#${hours[i].id}`).addClass("past");
+      $(`#${hours[i].id}`).removeClass("future");
+      $(`#${hours[i].id}`).removeClass("present");
+  }
+}
+
+
+// load previous tasks if any are stored
+var loadTasks = function() {
+  $("#hour9 .description").val(localStorage.getItem("hour9"));
+  $("#hour10 .description").val(localStorage.getItem("hour10"));
+  $("#hour11 .description").val(localStorage.getItem("hour11"));
+  $("#hour12 .description").val(localStorage.getItem("hour12"));
+  $("#hour13 .description").val(localStorage.getItem("hour13"));
+  $("#hour14 .description").val(localStorage.getItem("hour14"));
+  $("#hour15 .description").val(localStorage.getItem("hour15"));
+  $("#hour16 .description").val(localStorage.getItem("hour16"));
+  $("#hour17 .description").val(localStorage.getItem("hour17"));
+  $("#hour18 .description").val(localStorage.getItem("hour18"));
+}
+
+
+loadTasks();
 
