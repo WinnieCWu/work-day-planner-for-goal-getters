@@ -1,64 +1,63 @@
-// current time variable
-var currentTime = moment().hours();
-console.log(currentTime);
+$(document).ready(function() {
+  // listen for save button clicks
+  $('.saveBtn').on('click', function() {
+    // get nearby values
+    var value = $(this)
+      .siblings('.description')
+      .val();
+    var time = $(this)
+      .parent()
+      .attr('id');
 
-//hours variable for tasks
-var hours = $(".hour");
-console.log(hours);
-console.log(hours[0].dataset.id);
+    // save in localStorage
+    localStorage.setItem(time, value);
 
-//target save button
-var saveButton = $(".saveBtn");
-console.log(saveButton);
+    // Show notification that item was saved to localStorage by adding class 'show'
+    $('.notification').addClass('show');
 
-// target textarea
-var taskDescriptionInput = $("textarea").val();
+    // Timeout to remove 'show' class after 5 seconds
+    setTimeout(function() {
+      $('.notification').removeClass('show');
+    }, 5000);
+  });
 
+  function hourUpdater() {
+    // get current number of hours
+    var currentHour = moment().hours();
 
-var currentDay = $("#currentDay")
-var currentDayMoment = moment().format("dddd, MMMM Do YYYY, h:mm:ss a");
-console.log(currentDayMoment);
-$(".currentDay").html(currentDayMoment);
+    // loop over time blocks
+    $('.time-block').each(function() {
+      var blockHour = parseInt(
+        $(this)
+          .attr('id')
+          .split('-')[1]
+      );
 
-//add event listener to all the save buttons
-saveButton.on("click", function() {
-
-  // target the task in the sibling element with class "description"
-  var thisTask = $(this).siblings(".description").val();
-  console.log(thisTask);
-  // target the id of the entire parent time block
-  var thisTime = $(this).parent().attr("id");
-
-  // save targeted task into local storage, with key as time and value as task
-  localStorage.setItem(thisTime, thisTask);
-});
-
-// for loop to audit the hours and compare to the current time
-for (var i = 0; i < hours.length; i++) {
-  // parse the hour into integers
-  var taskTime = parseInt(hours[i].dataset.id);
-
-
-  if (taskTime > currentTime) {
-      $(`#${hours[i].id}`).addClass("future");
-      $(`#${hours[i].id}`).removeClass("past");
-      $(`#${hours[i].id}`).removeClass("present");
+      // check if we've moved past this time
+      if (blockHour < currentHour) {
+        $(this).addClass('past');
+      } else if (blockHour === currentHour) {
+        $(this).removeClass('past');
+        $(this).addClass('present');
+      } else {
+        $(this).removeClass('past');
+        $(this).removeClass('present');
+        $(this).addClass('future');
+      }
+    });
   }
 
+  hourUpdater();
 
-  if (taskTime === currentTime) {
-      $(`#${hours[i].id}`).addClass("present");
-      $(`#${hours[i].id}`).removeClass("future");
-      $(`#${hours[i].id}`).removeClass("past");
-  }
+  // set up interval to check if current time needs to be updated
+  var interval = setInterval(hourUpdater, 15000);
 
 
-  if (taskTime < currentTime) {
-      $(`#${hours[i].id}`).addClass("past");
-      $(`#${hours[i].id}`).removeClass("future");
-      $(`#${hours[i].id}`).removeClass("present");
-  }
-}
+
+  var currentDayMoment = moment().format("dddd, MMMM Do YYYY, h:mm:ss a");
+  console.log(currentDayMoment);
+  $(".currentDay").html(currentDayMoment);
+
 
 
 // load previous tasks if any are stored
@@ -75,6 +74,6 @@ var loadTasks = function() {
   $("#hour18 .description").val(localStorage.getItem("hour18"));
 }
 
-
-loadTasks();
-
+  // display current day on page
+  $('#currentDay').text(moment().format('dddd, MMMM Do'));
+});
