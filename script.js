@@ -52,13 +52,9 @@ $(document).ready(function() {
   // set up interval to check if current time needs to be updated
   var interval = setInterval(hourUpdater, 15000);
 
-
-
+// display current day on page
   var currentDayMoment = moment().format("dddd, MMMM Do YYYY, h:mm:ss a");
-  console.log(currentDayMoment);
   $(".currentDay").html(currentDayMoment);
-
-
 
 // load previous tasks if any are stored
 var loadTasks = function() {
@@ -74,6 +70,5 @@ var loadTasks = function() {
   $("#hour18 .description").val(localStorage.getItem("hour18"));
 }
 
-  // display current day on page
-  $('#currentDay').text(moment().format('dddd, MMMM Do'));
+loadTasks();
 });
